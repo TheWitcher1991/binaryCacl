@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>BinaryCacl</title>
+    <link rel="stylesheet" href="./style/index.css">
+</head>
+<body>
+
+    <main id="wrapper">
+        <div class="wrapper__title">
+            <h1>Калькулятор систем счисления</h1>
+        </div>
+        <section class="wrapper__container c-content">
+            <div class="form__container">
+                <label for="number" class="number">
+                    <span class="exp">Введите число:</span>
+                    <input type="text" class="input" name="number" id="number">
+                </label>
+            </div>
+            <div class="sys__container">
+                <div class="sys-input">
+                    <div class="left">
+                        <label for="sys1" class="sys1">
+                            <span class="exp">Из какой:</span>
+                            <input type="number" class="input" name="sys1" id="sys1">
+                        </label>
+                    </div>
+                    <div class="right">
+                        <label for="sys2" class="sys2">
+                            <span class="exp">В какую:</span>
+                            <input type="number" class="input" name="sys2" id="sys2">
+                        </label>
+                    </div>
+                </div>
+                <div class="sys-submit">
+                    <input type="button" name="bth" id="bth" value="Перевести">
+                </div>
+            </div>
+        </section>
+        <section class="wrapper__container c-output">
+
+        </section>
+    </main>
+    
+    <script src="./script/index.js"></script>
+</body>
+</html>
