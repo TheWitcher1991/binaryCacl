@@ -1,21 +1,77 @@
 'use strict';
 
+/**
+ * @module math/core/in
+ */
+
+/**
+ * @class In
+ * @constructor
+ * @private
+ */
 class In {
+    /**
+     * @param {String} number 
+     * @param {String} sys 
+     */
     constructor(number, sys) {
         this.number = number;
         this.sys = sys;
     }
 
+    /**
+     * @public
+     * @returns {String}
+     */
     procession () {
         throw new Error('Метод procession должен быть реализован');
     }
 
+    /**
+     * @param {Number} number 
+     */
+    __bin(number) {
+        let out = [];
+
+        for (let i = 1; i <= 10e1 * number; i++) {
+            if (number % 2 === 0) {
+                if (number === 1)  {
+                    out.push('1');
+                    break;
+                }
+                number = number / 2;
+                out.push('0');
+            } else if (number % 2 !== 0) {
+                if (number === 1)  {
+                    out.push('1');
+                    break;
+                }
+                number = (number - 1) / 2;
+                out.push('1');
+            }
+        }  
+
+        return out.reverse().join('');
+    }
+
+    /**
+     * @static
+     * @private
+     */
     static #in () {
         return this;
     }
 }
 
+/**
+ * @class Benary
+ * @extends In
+ */
 class Benary extends In {
+    /**
+     * @param {String} number 
+     * @param {String} sys 
+     */
     constructor(number, sys) {
         super(number, sys)
     }
@@ -46,40 +102,55 @@ class Benary extends In {
     }
 }
 
+/**
+ * @class Binary
+ * @extends In
+ */
 class Binary extends In {
-    constructor(number) {
-        super(number);
+    /**
+     * @param {String} number 
+     * @param {String} sys 
+     */
+    constructor(number, sys) {
+        super(number, sys);
     }
 
     procession () {
         let out = [];
 
-        for (let i = 1; i <= 10e1 * this.number; i++) {
-            if (this.number % 2 === 0) {
-                if (this.number === 1)  {
-                    out.push('1');
-                    break;
-                }
-                this.number = this.number / 2;
-                out.push('0');
-            } else if (this.number % 2 !== 0) {
-                if (this.number === 1)  {
-                    out.push('1');
-                    break;
-                }
-                this.number = (this.number - 1) / 2;
-                out.push('1');
-            }
-        }
+        if (this.sys === 16) {
+            let sNumber = [...this.number + ''].reverse();
 
-        return out.reverse().join('');
+            sNumber.forEach((el, i) => {  
+                switch(sNumber[i]) {
+                    case 'A': sNumber[i] = 10; break;
+                    case 'B': sNumber[i] = 11; break;
+                    case 'C': sNumber[i] = 12; break;
+                    case 'D': sNumber[i] = 13; break;
+                    case 'E': sNumber[i] = 14; break;
+                    case 'F': sNumber[i] = 15; break;
+                }
+                sNumber[i] = +sNumber[i];
+                sNumber[i] = sNumber[i] * this.sys**i;
+            });
+
+            let resNum = sNumber.reduce((x, y) => x + y);
+            return this.__bin(resNum);
+        } else if (this.sys === 10) {
+            return this.__bin(+this.number)
+        } else {
+            let benNum = new Benary(this.number, this.sys).procession();
+            return this.__bin(benNum);
+        }
     }
 }
+
+//!-------------------------------------------------------------------------------------
 
 let bth   =  document.querySelector('#bth'),
     out   = document.querySelector('.c-output');
 
-const InBinary = number => new Binary(number).procession();
+const InBinary = (number, sys) => new Binary(number, sys).procession();
 const InBenary = (number, sys) => new Benary(number, sys).procession();
 
 bth.addEventListener('click', e => {
@@ -89,8 +160,8 @@ bth.addEventListener('click', e => {
         sys1  = +document.querySelector('#sys1').value,
         sys2  = +document.querySelector('#sys2').value;
 
-    if (sys1 === 10 && sys2 === 2) {
-        out.innerHTML = InBinary(+numOn);
+    if (sys1 && sys2 === 2) {
+        out.innerHTML = InBinary(numOn, sys1);
     }
     
     if (sys1 <= 10 && sys2 === 10) {
