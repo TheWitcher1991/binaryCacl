@@ -145,13 +145,71 @@ class Binary extends In {
     }
 }
 
+class OutSys extends In {
+    /**
+     * @param {String} number 
+     * @param {String} sys 
+     */
+     constructor(number, sys) {
+        super(number, sys);
+    }
+
+    /**
+     * @param {Number} orSys 
+     */
+    procession (orSys) {
+        if (this.sys <= 10) {
+            if (!orSys) {
+                return (+this.number).toString(this.sys);
+            } else {
+
+                console.log(this.number)
+
+                let sNumber = [...+this.number + ''].reverse();
+
+                console.log(sNumber);
+
+                sNumber.forEach((el, i) => {
+                    sNumber[i] = sNumber[i] * this.sys**i;
+                });
+
+                let res = sNumber.reduce((x, y) => x + y);
+
+                console.log(res);
+
+                return res.toString(orSys);
+            }
+        } else if (this.sys === 16) {
+            let sNumber = [...this.number + ''].reverse();
+
+            sNumber.forEach((el, i) => {  
+                switch(sNumber[i]) {
+                    case 'A': sNumber[i] = 10; break;
+                    case 'B': sNumber[i] = 11; break;
+                    case 'C': sNumber[i] = 12; break;
+                    case 'D': sNumber[i] = 13; break;
+                    case 'E': sNumber[i] = 14; break;
+                    case 'F': sNumber[i] = 15; break;
+                }
+                sNumber[i] = +sNumber[i];
+                sNumber[i] = sNumber[i] * this.sys**i;
+            });
+
+            let resNum = sNumber.reduce((x, y) => x + y);
+            return (+resNum).toString(orSys);
+        }
+    }
+}
+
 //!-------------------------------------------------------------------------------------
 
-let bth   =  document.querySelector('#bth'),
-    out   = document.querySelector('.c-output');
+let bth     = document.querySelector('#bth'),
+    out     = document.querySelector('.out'),
+    refresh = document.querySelector('#bth-r');
 
 const InBinary = (number, sys) => new Binary(number, sys).procession();
 const InBenary = (number, sys) => new Benary(number, sys).procession();
+const InOut    = (number, sys) => new OutSys(number, sys)
 
 bth.addEventListener('click', e => {
     e.preventDefault();
@@ -160,8 +218,15 @@ bth.addEventListener('click', e => {
         sys1  = +document.querySelector('#sys1').value,
         sys2  = +document.querySelector('#sys2').value;
 
+    out.classList.add('c-output');
+    refresh.setAttribute('style', 'display: block');
+
     if (sys1 && sys2 === 2) {
         out.innerHTML = InBinary(numOn, sys1);
+    }
+
+    if (sys1 <= 10 && sys2 <= 10) {
+        out.innerHTML = InOut(numOn, sys1).procession(sys2);
     }
     
     if (sys1 <= 10 && sys2 === 10) {
@@ -171,4 +236,21 @@ bth.addEventListener('click', e => {
     if (sys1 === 16 && sys2 === 10) {
         out.innerHTML = InBenary(numOn, sys1);
     }
+
+    if (sys1 === 10 && sys2 <= 10) {
+        out.innerHTML = InOut(numOn, sys2).procession();
+    }
+
+    if (sys1 === 16 && sys2 <= 10) {
+        out.innerHTML = InOut(numOn, sys1).procession(sys2);
+    }
 });
+
+refresh.addEventListener('click', e => {
+    e.preventDefault();
+
+    refresh.removeAttribute('style');
+    out.innerHTML = '';
+    out.classList.remove('c-output');
+    document.querySelector('.form__container').reset();
+})
